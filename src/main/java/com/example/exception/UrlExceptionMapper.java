@@ -3,6 +3,8 @@ package com.example.exception;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.NotAllowedException;
+import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -33,9 +35,43 @@ public class UrlExceptionMapper implements ExceptionMapper<Exception> {
             return handleInvalidUrlException((InvalidUrlException) exception);
         } else if (exception instanceof ConstraintViolationException) {
             return handleConstraintViolationException((ConstraintViolationException) exception);
+        } else if (exception instanceof NotAllowedException) {
+            return handleNotAllowedException((NotAllowedException) exception);
+        } else if (exception instanceof NotSupportedException) {
+            return handleNotSupportedException((NotSupportedException) exception);
         } else {
             return handleGenericException(exception);
         }
+    }
+
+    private Response handleNotSupportedException(NotSupportedException exception) {
+        LOG.debugf("UNSUPPORTED_MEDIA_TYPE: %s", exception.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "UNSUPPORTED_MEDIA_TYPE",
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
+                .entity(errorResponse)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+    private Response handleNotAllowedException(NotAllowedException exception) {
+        LOG.debugf("Method not allowed: %s", exception.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "METHOD_NOT_ALLOWED",
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return Response.status(Response.Status.METHOD_NOT_ALLOWED)
+                .entity(errorResponse)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 
     /**
