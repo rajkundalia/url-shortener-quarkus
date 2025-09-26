@@ -42,6 +42,29 @@ public class UrlShortenerResource {
     UrlShortenerService urlShortenerService;
 
     /**
+     * Simple ping endpoint at the root context.
+     * <p>
+     * GET /
+     *
+     * @return a simple text response
+     */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Operation(
+            summary = "Root Ping Check",
+            description = "A simple endpoint at the application's root context for basic liveness check."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Service is alive"
+    )
+    public String ping() {
+        LOG.debug("Ping endpoint reached.");
+        // A simple, fast, and lightweight response
+        return "URL Shortener Service is running.\nUse /{shortCode} for redirection or /api/urls to create a new one.";
+    }
+
+    /**
      * Creates a new shortened URL.
      * <p>
      * POST /api/urls
@@ -84,6 +107,8 @@ public class UrlShortenerResource {
                     )
             )
     })
+    // Note: Since we are validating the request here using @Valid annotation, some of the items in the exception mapper
+    // may not even be used.
     public Response createShortUrl(@Valid UrlRequest request) {
         LOG.infof("Creating short URL for: %s", request.getLongUrl());
 
