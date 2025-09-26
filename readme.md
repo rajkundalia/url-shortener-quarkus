@@ -189,51 +189,12 @@ The project follows clean architecture principles with clear separation of conce
 - Input validation using Bean Validation
 - Consistent response formats across all endpoints
 
-## Configuration
-
-Key configuration options in `application.properties`:
-
-### H2 Database (Default - Zero Setup)
-```properties
-# H2 in-memory database (data resets on restart)
-quarkus.datasource.db-kind=h2
-quarkus.datasource.jdbc.url=jdbc:h2:mem:testdb
-quarkus.hibernate-orm.database.generation=drop-and-create
-
-# H2 Console (development only)
-quarkus.h2.console.enabled=true
-```
-
-### Application Settings
-```properties
-# Short code configuration
-app.shortcode.length=6
-app.base-url=http://localhost:8080
-
-# OpenAPI Documentation
-quarkus.swagger-ui.always-include=true
-mp.openapi.extensions.smallrye.info.title=URL Shortener API
-```
-
-## Database Options
-
 ### Development Mode (Default)
 - **H2 In-Memory Database** - Zero configuration required
 - **Data Persistence** - Data resets on application restart
 - **H2 Console Access** - Available at `/h2-console` for real-time inspection
 - **JDBC URL**: `jdbc:h2:mem:testdb`
 - **Username**: `sa` (Password: empty)
-
-### Production Configuration
-For production deployments, simply change the database configuration to PostgreSQL, MySQL, or other supported databases:
-
-```properties
-# Example: PostgreSQL
-quarkus.datasource.db-kind=postgresql
-quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/urlshortener
-quarkus.datasource.username=user
-quarkus.datasource.password=password
-```
 
 ## Some learnings:
 1. The build time would be double for this app compared to a SpringBoot.
